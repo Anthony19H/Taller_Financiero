@@ -108,4 +108,64 @@ public class TestJUnit {
 		assertFalse(resultado);
 		assertEquals(0.0, cuenta.getSaldoActual(), 0.001);
 	}
+	
+	// =======================================================
+		// PRUEBAS DE COBERTURA: retirar (Líneas y Ramas)
+		// =======================================================
+
+		@Test
+		public void testRetirar_RamaTrue_MontoValidoYSaldoSuficiente() {
+			// Rama IF: Valida que si monto > 0 Y monto <= saldoActual,
+			// resta correctamente el monto del saldo y retorne true (200.0 - 50.0 = 150.0).
+			Banco banco = new Banco();
+			Cuenta cuenta = new Cuenta("1000");
+			cuenta.setSaldoActual(200.0);
+
+			boolean resultado = banco.retirar(50.0, cuenta);
+
+			assertTrue(resultado);
+			assertEquals(150.0, cuenta.getSaldoActual(), 0.001);
+		}
+
+		@Test
+		public void testRetirar_RamaFalse_MontoCero() {
+			// Rama ELSE (monto <= 0): Valida que al intentar retirar un monto de 0,
+			// no cumpla la condición del IF, retorne false y mantenga el saldo intacto.
+			Banco banco = new Banco();
+			Cuenta cuenta = new Cuenta("1000");
+			cuenta.setSaldoActual(200.0);
+
+			boolean resultado = banco.retirar(0.0, cuenta);
+
+			assertFalse(resultado);
+			assertEquals(200.0, cuenta.getSaldoActual(), 0.001);
+		}
+
+		@Test
+		public void testRetirar_RamaFalse_MontoNegativo() {
+			// Rama ELSE (monto <= 0): Valida que al ingresar un monto negativo,
+			// retorne false sin modificar el saldo.
+			Banco banco = new Banco();
+			Cuenta cuenta = new Cuenta("1000");
+			cuenta.setSaldoActual(200.0);
+
+			boolean resultado = banco.retirar(-30.0, cuenta);
+
+			assertFalse(resultado);
+			assertEquals(200.0, cuenta.getSaldoActual(), 0.001);
+		}
+
+		@Test
+		public void testRetirar_RamaFalse_SaldoInsuficiente() {
+			// Rama ELSE (monto > saldoActual): Valida que si el monto a retirar supera 
+			// el saldo disponible en la cuenta, retorne false y no altere el saldo.
+			Banco banco = new Banco();
+			Cuenta cuenta = new Cuenta("1000");
+			cuenta.setSaldoActual(100.0);
+
+			boolean resultado = banco.retirar(150.0, cuenta);
+
+			assertFalse(resultado);
+			assertEquals(100.0, cuenta.getSaldoActual(), 0.001);
+		}
 }
