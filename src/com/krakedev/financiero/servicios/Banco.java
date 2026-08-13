@@ -35,7 +35,7 @@ public class Banco {
 
 		if (monto > 0) {
 			double nuevoSaldo;
-			nuevoSaldo = cuenta.getSaldoActual()+monto;
+			nuevoSaldo = cuenta.getSaldoActual() + monto;
 			cuenta.setSaldoActual(nuevoSaldo);
 			return true;
 		}else {
@@ -53,6 +53,19 @@ public class Banco {
 		}else {
 			return false;
 		}
+	}
+	
+	public boolean transferir(Cuenta origen,Cuenta destino,double monto) {
+		
+		boolean estadoTransferencia = retirar(monto,origen);
+		if(!estadoTransferencia) {
+			return false;
+		}else {
+			depositar(monto,destino);
+			return true;
+		}
+		
+		
 	}
 	
 }

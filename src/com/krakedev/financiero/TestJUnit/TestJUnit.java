@@ -168,4 +168,64 @@ public class TestJUnit {
 			assertFalse(resultado);
 			assertEquals(100.0, cuenta.getSaldoActual(), 0.001);
 		}
+		
+		// =======================================================
+		// PRUEBAS DE COBERTURA: transferir (Líneas y Ramas)
+		// =======================================================
+
+		@Test
+		public void testTransferir_Exito() {
+			// Rama ELSE (!estadoTransferencia = false): Valida que si la cuenta origen
+			// tiene saldo suficiente y el monto es válido, se descuente el monto de origen,
+			// se sume a la cuenta destino y retorne true.
+			Banco banco = new Banco();
+			Cuenta cuentaOrigen = new Cuenta("1000");
+			cuentaOrigen.setSaldoActual(500.0);
+
+			Cuenta cuentaDestino = new Cuenta("1001");
+			cuentaDestino.setSaldoActual(100.0);
+
+			boolean resultado = banco.transferir(cuentaOrigen, cuentaDestino, 200.0);
+
+			assertTrue(resultado);
+			assertEquals(300.0, cuentaOrigen.getSaldoActual(), 0.001);
+			assertEquals(300.0, cuentaDestino.getSaldoActual(), 0.001);
+		}
+
+		@Test
+		public void testTransferir_FalloPorSaldoInsuficiente() {
+			// Rama IF (!estadoTransferencia = true): Valida que si el retiro falla
+			// por saldo insuficiente en la origen, la transferencia retorne false
+			// y no modifique el saldo de ninguna de las dos cuentas.
+			Banco banco = new Banco();
+			Cuenta cuentaOrigen = new Cuenta("1000");
+			cuentaOrigen.setSaldoActual(50.0);
+
+			Cuenta cuentaDestino = new Cuenta("1001");
+			cuentaDestino.setSaldoActual(100.0);
+
+			boolean resultado = banco.transferir(cuentaOrigen, cuentaDestino, 200.0);
+
+			assertFalse(resultado);
+			assertEquals(50.0, cuentaOrigen.getSaldoActual(), 0.001);
+			assertEquals(100.0, cuentaDestino.getSaldoActual(), 0.001);
+		}
+
+		@Test
+		public void testTransferir_FalloPorMontoInvalido() {
+			// Rama IF (!estadoTransferencia = true): Valida que si se intenta transferir
+			// un monto menor o igual a 0, la operación retorne false sin modificar los saldos.
+			Banco banco = new Banco();
+			Cuenta cuentaOrigen = new Cuenta("1000");
+			cuentaOrigen.setSaldoActual(500.0);
+
+			Cuenta cuentaDestino = new Cuenta("1001");
+			cuentaDestino.setSaldoActual(100.0);
+
+			boolean resultado = banco.transferir(cuentaOrigen, cuentaDestino, -50.0);
+
+			assertFalse(resultado);
+			assertEquals(500.0, cuentaOrigen.getSaldoActual(), 0.001);
+			assertEquals(100.0, cuentaDestino.getSaldoActual(), 0.001);
+		}
 }
