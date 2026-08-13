@@ -18,18 +18,28 @@ public class Banco {
 	public void setUltimoCodigo(int ultimoCodigo) {
 		this.ultimoCodigo = ultimoCodigo;
 	}
-	
+
 	public Cuenta crearCuenta(Cliente cliente) {
-		
-		String codigoStr = ultimoCodigo+"";//convertir ultimoCodigo a String
-		
+
+		String codigoStr = ultimoCodigo + "";// convertir ultimoCodigo a String
+
 		ultimoCodigo++;
-		
+
 		Cuenta c1 = new Cuenta(codigoStr);
-		
+
 		c1.setPropietario(cliente);
-		return c1; 
+		return c1;
 	}
-	
-	
+
+	public boolean depositar(double monto, Cuenta cuenta) {
+
+		if (monto > 0) {
+			double nuevoSaldo;
+			nuevoSaldo = cuenta.getSaldoActual()+monto;
+			cuenta.setSaldoActual(nuevoSaldo);
+			return true;
+		}else {
+			return false;
+		}
+	}
 }

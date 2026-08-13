@@ -1,7 +1,9 @@
 package com.krakedev.financiero.TestJUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +12,10 @@ import com.krakedev.financiero.entidades.Cuenta;
 import com.krakedev.financiero.servicios.Banco;
 
 public class TestJUnit {
+
+	// =======================================================
+	// PRUEBAS DE COBERTURA: crearCuenta
+	// =======================================================
 
 	@Test
 	public void testCrearCuenta_AsignacionCodigoPropietarioEIncremento() {
@@ -57,5 +63,49 @@ public class TestJUnit {
 
 		assertEquals("5000", cuenta.getId());
 		assertEquals(5001, banco.getUltimoCodigo());
+	}
+
+	// =======================================================
+	// PRUEBAS DE COBERTURA: depositar (Lineas y Ramas)
+	// =======================================================
+
+	@Test
+	public void testDepositar_RamaTrue() {
+		// Rama IF: Valida que al depositar un monto mayor a 0 (monto > 0), 
+		// el saldo de la cuenta se incremente correctamente y retorne true.
+		Banco banco = new Banco();
+		Cuenta cuenta = new Cuenta("1000"); // Inicialmente saldoActual es 0.0
+
+		boolean resultado = banco.depositar(150.50, cuenta);
+
+		assertTrue(resultado);
+		// Se usa delta (0.001) para la comparación de tipos double
+		assertEquals(150.50, cuenta.getSaldoActual(), 0.001);
+	}
+
+	@Test
+	public void testDepositar_RamaFalse_MontoCero() {
+		// Rama ELSE: Valida que al intentar depositar un monto igual a 0, 
+		// la operación retorne false y el saldo de la cuenta no se altere.
+		Banco banco = new Banco();
+		Cuenta cuenta = new Cuenta("1000");
+
+		boolean resultado = banco.depositar(0.0, cuenta);
+
+		assertFalse(resultado);
+		assertEquals(0.0, cuenta.getSaldoActual(), 0.001);
+	}
+
+	@Test
+	public void testDepositar_RamaFalse_MontoNegativo() {
+		// Rama ELSE: Valida que al intentar depositar un monto negativo (monto <= 0), 
+		// la operación retorne false y el saldo de la cuenta permanezca sin cambios.
+		Banco banco = new Banco();
+		Cuenta cuenta = new Cuenta("1000");
+
+		boolean resultado = banco.depositar(-50.0, cuenta);
+
+		assertFalse(resultado);
+		assertEquals(0.0, cuenta.getSaldoActual(), 0.001);
 	}
 }
